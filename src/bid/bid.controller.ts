@@ -1,10 +1,9 @@
 import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { BidQueueService } from './bid-queue.service';
 import { BidService } from './bid.service';
-import { CreateBidDto } from '@app/common/dtos/create-bid.dto';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue, QueueEvents } from 'bullmq';
-import { handleError } from '@app/common/helpers/error.handler';
+import { CreateBidDto, handleError } from '@app/common';
 
 @Controller('bid')
 export class BidController {

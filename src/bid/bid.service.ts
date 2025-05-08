@@ -4,9 +4,7 @@ import { Bid } from './bid.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { tryCatch } from 'bullmq';
 import { Item } from 'src/item/item.entity';
-import { IBid } from '@app/common';
-import { CreateBidDto } from '@app/common/dtos/create-bid.dto';
-import { handleError } from '@app/common/helpers/error.handler';
+import { CreateBidDto, handleError, IBid } from '@app/common';
 
 @Injectable()
 export class BidService {
