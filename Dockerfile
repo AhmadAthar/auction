@@ -4,6 +4,8 @@ FROM node:alpine
 # Step 2: Set working directory
 WORKDIR /usr/src/app
 
+RUN apk add --no-cache git
+
 # Step 3: Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install
