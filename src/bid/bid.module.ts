@@ -5,19 +5,24 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Bid } from './bid.entity';
 import { BullModule } from '@nestjs/bullmq';
 import { BidQueueService } from './bid-queue.service';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule,
     TypeOrmModule.forFeature([Bid]),
-    BullModule.registerQueue({
+    BullModule.registerQueueAsync({
       name: 'bid',
-      connection: {
-        host: "redis-13573.c256.us-east-1-2.ec2.redns.redis-cloud.com",
-        port: 13573,
-        username: 'default',
-        password: "CV7OCsr2qijOneb6iAq6cX479VATnpXo"
-      }
-    })
+      useFactory: async (configService: ConfigService) => ({
+        connection: {
+          host: configService.get<string>('REDIS_HOST'),
+          port: parseInt(configService.get<string>('REDIS_PORT')),
+          username: configService.get<string>('REDIS_USERNAME'),
+          password: configService.get<string>('REDIS_PASSWORD'),
+        },
+      }),
+      inject: [ConfigService],
+    }),
 ],
   providers: [BidService, BidQueueService],
   controllers: [BidController]

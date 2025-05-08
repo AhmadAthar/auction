@@ -4,21 +4,22 @@ import { BidService } from './bid.service';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue, QueueEvents } from 'bullmq';
 import { CreateBidDto, handleError } from '@app/common';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('bid')
 export class BidController {
     public queueEvents;
     public constructor(
-        // private readonly bidQueueService: BidQueueService,
         @InjectQueue('bid') private readonly bidQueue: Queue,
-        private readonly bidService: BidService
+        private readonly bidService: BidService,
+        private readonly configService: ConfigService
     ) {
         this.queueEvents = new QueueEvents('bid', {
             connection: {
-                host: 'redis-13573.c256.us-east-1-2.ec2.redns.redis-cloud.com',
-                port: 13573,
-                username: "default",
-                password: "CV7OCsr2qijOneb6iAq6cX479VATnpXo"
+                host: this.configService.get('REDIS_HOST'),
+                port: parseFloat(this.configService.get('REDIS_PORT')),
+                username: this.configService.get('REDIS_USERNAME'),
+                password: this.configService.get('REDIS_PASSWORD')
             },
         });
     }
@@ -28,12 +29,11 @@ export class BidController {
         @Body() createBidDto: CreateBidDto
     ) {
         try {
+            console.log("here: ")
             const job = await this.bidQueue.add('place-bid', createBidDto, { removeOnComplete: true, removeOnFail: true });
             const result = await job.waitUntilFinished(this.queueEvents);
-            console.log("result: ", result)
             return result;
         } catch (error) {
-            console.log("error:  ***********************************************************************", error.message)
             handleError(error);
             
         }

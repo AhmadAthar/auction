@@ -22,19 +22,16 @@ export class BidService {
                     where: { id: itemId },
                 });
 
-
                 if (!item) {
-                    throw new NotFoundException('No item auction found!');
+                    throw new NotFoundException('No item auction found');
                 }
 
-                const highestBid = await manager
+                const highestBid = item.highestBidId ? await manager
                     .createQueryBuilder(Bid, 'bid')
-                    .where('bid.itemId = :itemId', { itemId })
-                    .orderBy('bid.price', 'DESC')
-                    .getOne();
+                    .where('bid.id = :bidId', { bidId: item.highestBidId })
+                    .getOne() : null;
 
-                // TODO : add validation for duration
-                if (new Date().getTime() > (item.createdAt + item.duration * 1000)) {
+                if (new Date().getTime() > (+item.createdAt + +item.duration * 1000)) {
                     throw new BadRequestException("Item Expired")
                 }
 
@@ -42,16 +39,17 @@ export class BidService {
                     throw new BadRequestException('Bid must be higher than current highest bid');
                 }
 
-
-
                 const bid: IBid = manager.create(Bid, {
                     itemId,
                     userId,
                     price
                 });
-                return await manager.save(bid);
-            });
 
+                const savedBid = await manager.save(bid);
+                item.highestBidId = savedBid.id;
+                await manager.save(item);
+                return savedBid;
+            });
         } catch (error) {
             handleError(error);
         }

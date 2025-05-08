@@ -1,5 +1,6 @@
-import { IItem } from "@app/common";
-import { BeforeInsert, BeforeUpdate, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { IBid, IItem } from "@app/common";
+import { Bid } from "src/bid/bid.entity";
+import { BeforeInsert, BeforeUpdate, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Item implements IItem{
@@ -13,8 +14,14 @@ export class Item implements IItem{
     @Column('numeric')
     public startingPrice: number;
 
-    @Column('numeric', { nullable: true })
-    public highestPrice: number;
+    // @Column('numeric', { nullable: true })
+    // public highestPrice: number;
+    @Column('uuid', { nullable: true })
+    public highestBidId: string;
+
+    @OneToOne(() => Bid)
+    @JoinColumn({ name: 'highestBidId'})
+    public highestBid: IBid
     
     @Column('numeric')
     public duration: number;
