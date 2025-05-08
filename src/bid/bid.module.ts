@@ -6,9 +6,11 @@ import { Bid } from './bid.entity';
 import { BullModule } from '@nestjs/bullmq';
 import { BidQueueService } from './bid-queue.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GatewayModule } from 'src/gateway/gateway.module';
 
 @Module({
   imports: [
+    GatewayModule,
     ConfigModule,
     TypeOrmModule.forFeature([Bid]),
     BullModule.registerQueueAsync({

@@ -5,13 +5,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { tryCatch } from 'bullmq';
 import { Item } from 'src/item/item.entity';
 import { CreateBidDto, handleError, IBid } from '@app/common';
+import { NotificationsGateway } from 'src/gateway/notification-gateway';
 
 @Injectable()
 export class BidService {
     public constructor(
         @InjectRepository(Bid)
         private readonly bidRepository: Repository<Bid>,
-        private readonly dataSource: DataSource
+        private readonly dataSource: DataSource,
+        private readonly notificatonGateway: NotificationsGateway
     ) { }
 
     public async createBid(createBidDto: CreateBidDto): Promise<IBid> {
@@ -48,6 +50,7 @@ export class BidService {
                 const savedBid = await manager.save(bid);
                 item.highestBidId = savedBid.id;
                 await manager.save(item);
+                this.notificatonGateway.handleSendNotification(null, { message: JSON.stringify({ item, savedBid })})
                 return savedBid;
             });
         } catch (error) {
