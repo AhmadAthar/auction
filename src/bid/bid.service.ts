@@ -16,7 +16,7 @@ export class BidService {
         private readonly dataSource: DataSource
     ) { }
 
-    public async createBid(createBidDto: CreateBidDto): Promise<IBid>{
+    public async createBid(createBidDto: CreateBidDto): Promise<IBid> {
         try {
             const { itemId, userId, price } = createBidDto;
             return await this.dataSource.transaction(async (manager) => {
@@ -35,13 +35,16 @@ export class BidService {
                     .orderBy('bid.price', 'DESC')
                     .getOne();
 
+                // TODO : add validation for duration
+                if (new Date().getTime() > (item.createdAt + item.duration * 1000)) {
+                    throw new BadRequestException("Item Expired")
+                }
 
                 if (highestBid && price <= highestBid.price) {
                     throw new BadRequestException('Bid must be higher than current highest bid');
                 }
 
-                // TODO : add validation for duration
-                // if (){}
+
 
                 const bid: IBid = manager.create(Bid, {
                     itemId,

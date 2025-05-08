@@ -4,6 +4,7 @@ import { BidService } from './bid.service';
 import { CreateBidDto } from '@app/common/dtos/create-bid.dto';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue, QueueEvents } from 'bullmq';
+import { handleError } from '@app/common/helpers/error.handler';
 
 @Controller('bid')
 export class BidController {
@@ -15,8 +16,10 @@ export class BidController {
     ) {
         this.queueEvents = new QueueEvents('bid', {
             connection: {
-                host: 'localhost',
-                port: 6379,
+                host: 'redis-13573.c256.us-east-1-2.ec2.redns.redis-cloud.com',
+                port: 13573,
+                username: "default",
+                password: "CV7OCsr2qijOneb6iAq6cX479VATnpXo"
             },
         });
     }
@@ -32,9 +35,8 @@ export class BidController {
             return result;
         } catch (error) {
             console.log("error:  ***********************************************************************", error.message)
-            if (error.message === 'Bid must be higher than current highest bid') {
-                throw new BadRequestException(error.message);
-              }
+            handleError(error);
+            
         }
     }
 }

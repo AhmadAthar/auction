@@ -12,8 +12,10 @@ import { BidQueueService } from './bid-queue.service';
     BullModule.registerQueue({
       name: 'bid',
       connection: {
-        host: "localhost",
-        port: 6379
+        host: "redis-13573.c256.us-east-1-2.ec2.redns.redis-cloud.com",
+        port: 13573,
+        username: 'default',
+        password: "CV7OCsr2qijOneb6iAq6cX479VATnpXo"
       }
     })
 ],
