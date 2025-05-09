@@ -120,4 +120,10 @@ Combining queueing and transactions avoids concurrency issues, ensuring accurate
 
 
 
+**Automated Test Cases**
+
+- Navigate to root directory and run command "yarn test:e2e"
+
+
+
 
