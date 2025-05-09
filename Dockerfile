@@ -6,18 +6,20 @@ WORKDIR /usr/src/app
 
 RUN apk add --no-cache git
 
+RUN command -v yarn >/dev/null 2>&1 || npm install -g yarn
+
 # Step 3: Copy package files and install dependencies
 COPY package*.json ./
-RUN npm install
+RUN yarn install
 
 # Step 4: Copy the rest of the app
 COPY . .
 
 # Step 5: Build the app
-RUN npm run build
+RUN yarn build
 
 # Step 6: Expose the app port
 EXPOSE 3000
 
 # Step 7: Start the app
-CMD ["npm", "run", "start:dev"]
+CMD ["yarn", "start:dev"]
