@@ -1,4 +1,4 @@
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { IUser } from '@app/common';
 
@@ -12,5 +12,12 @@ export class UserController {
     @Post('populateUsers')
     public populateUsers(): Promise<IUser[]>{
         return this.userService.populateUsers();
+    }
+
+    @Post('createUser')
+    public createUser(
+        @Body() createUserDto: any
+    ){
+        return this.userService.createUser(createUserDto)
     }
 }

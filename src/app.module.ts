@@ -6,6 +6,8 @@ import { AuctionModule } from './auction/auction.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GatewayModule } from './gateway/gateway.module';
+import { Bid } from './bid/bid.entity';
+import { Item } from './item/item.entity';
 
 @Module({
   imports: [
@@ -26,15 +28,19 @@ import { GatewayModule } from './gateway/gateway.module';
           password: configService.get("DB_PASSWORD"),
           database: configService.get<string>("DB_DATABASE"),
           synchronize: configService.get("DB_SYNCHRONIZE") === 'true',
+          // synchronize: false,
           logging: configService.get("DB_LOGGING") === 'true',
           ssl: {
-            rejectUnauthorized: configService.get("DB_SSL")
+            // rejectUnauthorized: configService.get("DB_SSL")\
+            rejectUnauthorized: false
+
           },
           autoLoadEntities: configService.get("DB_ALE") === 'true',
 
         })
       }
     }),
+    // TypeOrmModule.forFeature([Bid, Item]),
     UserModule,
     ItemModule,
     BidModule,

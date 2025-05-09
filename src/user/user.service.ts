@@ -12,7 +12,12 @@ export class UserService {
         private readonly userRepository: Repository<User>
     ) { }
 
-    public createUser() { }
+    public async createUser(createUserDto: any) {
+        const { firstName, lastName } = createUserDto;
+        return await this.userRepository.save(
+            this.userRepository.create({ firstName, lastName})
+        )
+     }
 
     public async populateUsers(): Promise<IUser[]> {
         const users: Partial<IUser>[] = generateUsers(100);
