@@ -6,12 +6,11 @@ import { tryCatch } from 'bullmq';
 import { Item } from 'src/item/item.entity';
 import { CreateBidDto, handleError, IBid } from '@app/common';
 import { NotificationsGateway } from 'src/gateway/notification-gateway';
+import { User } from 'src/user/user.entity';
 
 @Injectable()
 export class BidService {
     public constructor(
-        @InjectRepository(Bid)
-        private readonly bidRepository: Repository<Bid>,
         private readonly dataSource: DataSource,
         private readonly notificatonGateway: NotificationsGateway
     ) { }
@@ -20,12 +19,21 @@ export class BidService {
         try {
             const { itemId, userId, price } = createBidDto;
             return await this.dataSource.transaction(async (manager) => {
+                
                 const item = await manager.findOne(Item, {
                     where: { id: itemId },
                 });
 
                 if (!item) {
                     throw new NotFoundException('No item auction found');
+                }
+
+                const user = await manager.findOne(User, {
+                    where: { id: userId }
+                })
+
+                if(!user){
+                    throw new NotFoundException('User not found!')
                 }
 
                 const highestBid = item.highestBidId ? await manager

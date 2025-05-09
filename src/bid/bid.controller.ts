@@ -11,7 +11,6 @@ export class BidController {
     public queueEvents;
     public constructor(
         @InjectQueue('bid') private readonly bidQueue: Queue,
-        private readonly bidService: BidService,
         private readonly configService: ConfigService
     ) {
         this.queueEvents = new QueueEvents('bid', {
@@ -29,7 +28,6 @@ export class BidController {
         @Body() createBidDto: CreateBidDto
     ) {
         try {
-            console.log("here: ")
             const job = await this.bidQueue.add('place-bid', createBidDto, { removeOnComplete: true, removeOnFail: true });
             const result = await job.waitUntilFinished(this.queueEvents);
             return result;
