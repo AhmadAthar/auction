@@ -41,7 +41,7 @@ export class BidService {
                     .where('bid.id = :bidId', { bidId: item.highestBidId })
                     .getOne() : null;
 
-                if (new Date().getTime() > (+item.createdAt + +item.duration * 1000)) {
+                if (new Date().getTime() > item.endTime) {
                     throw new BadRequestException("Item Expired")
                 }
 
@@ -65,4 +65,5 @@ export class BidService {
             handleError(error);
         }
     }
+
 }

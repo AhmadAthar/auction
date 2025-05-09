@@ -17,7 +17,8 @@ export class ItemService {
         try {
             return await this.itemRepository.save(
                 this.itemRepository.create({
-                    ...createItemDto
+                    ...createItemDto,
+                    endTime: ( new Date().getTime() + (+createItemDto.duration * 1000))
                 })
             )
         } catch (error) {

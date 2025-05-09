@@ -5,6 +5,10 @@ export class CreateItemDto{
     @IsNotEmpty()
     public name: string;
 
+    @IsString()
+    @IsNotEmpty()
+    public description: string;
+
     @IsNumber()
     @IsNotEmpty()
     public startingPrice: number;

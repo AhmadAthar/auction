@@ -11,11 +11,12 @@ export class Item implements IItem{
     @Column('text')
     public name: string;
 
+    @Column('text')
+    public description: string;
+
     @Column('numeric')
     public startingPrice: number;
 
-    // @Column('numeric', { nullable: true })
-    // public highestPrice: number;
     @Column('uuid', { nullable: true })
     public highestBidId: string;
 
@@ -25,6 +26,9 @@ export class Item implements IItem{
     
     @Column('numeric')
     public duration: number;
+
+    @Column('numeric')
+    public endTime: number;
     
     @Column('numeric')
     public createdAt: number;
